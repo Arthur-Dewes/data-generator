@@ -1,12 +1,12 @@
 # 🧪 FakeDataGenerator
 
-**Gere dados sintéticos realistas com facilidade!**
+**Easily generate realistic synthetic data!**
 
-O `FakeDataGenerator` é uma ferramenta poderosa para gerar dados fictícios de forma realista e personalizável, ideal para testes, prototipagem de sistemas, demonstrações e treinamento de modelos de machine learning. Ele suporta campos específicos para os contextos do Brasil (`pt_BR`) e dos Estados Unidos (`en_US`), com múltiplas opções de exportação (CSV, JSON e HTML).
+`FakeDataGenerator` is a powerful tool for generating realistic and customizable fake data, ideal for testing, system prototyping, demonstrations, and machine learning model training. It supports locale-specific fields for Brazil (`pt_BR`) and the United States (`en_US`), with multiple export options (CSV, JSON, and HTML).
 
 ---
 
-## 📦 Instalação
+## 📦 Installation
 
 ```bash
 pip install faker jinja2
