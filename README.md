@@ -18,7 +18,7 @@
 
 ## Installation
 
-Clone this repository or add `ffactory` to your project manually.
+Clone this repository or add `ffactory` to your project manually.  
 Install dependencies.
 
 ```bash
