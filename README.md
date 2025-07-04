@@ -18,11 +18,17 @@
 
 ## Installation
 
+Clone this repository or add `ffactory` to your project manually.
+
 ```bash
-pip install faker numpy
+pip install faker numpy jinja2
 ```
 
-Clone this repository or add `ffactory` to your project manually.
+or by uv
+
+```bash
+uv sync
+```
 
 ---
 
