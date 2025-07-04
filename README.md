@@ -37,8 +37,8 @@ uv sync
 ```python
 from ffactory import FakeDataGenerator
 
-# Create a table with 10 rows
-gen = FakeDataGenerator(num_rows=10, locale='pt_BR')
+# Create a table with 100 rows
+gen = FakeDataGenerator(num_rows=100, locale='pt_BR')
 
 # Add columns
 gen.add_columns([
