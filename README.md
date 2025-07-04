@@ -19,6 +19,7 @@
 ## Installation
 
 Clone this repository or add `ffactory` to your project manually.
+Install dependencies.
 
 ```bash
 pip install faker numpy jinja2
@@ -27,6 +28,7 @@ pip install faker numpy jinja2
 or by uv
 
 ```bash
+uv venv
 uv sync
 ```
 
