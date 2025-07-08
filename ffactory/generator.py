@@ -27,6 +27,7 @@ class FakeDataGenerator:
         self.__faker = Faker(locale)
         self.__rows = []
         self.__cols = []
+        self.__original_schema = []
         self.__num_rows = num_rows
         self.__faker_instances = {}
         self.__base_seed = seed
@@ -159,6 +160,7 @@ class FakeDataGenerator:
         self.__faker_instances[name] = faker_for_column
 
         self.__cols.append({'name': name, 'params': kwargs})
+        self.__original_schema.append(name)
     
     def add_columns(self, columns: list[str | tuple[str, dict]]) -> None:
         """
@@ -221,53 +223,42 @@ class FakeDataGenerator:
         
     def concatenate(self, table: "FakeDataGenerator") -> None:
         """
-        Concatenates rows from another FakeDataGenerator instance after aligning the column order.
+        Concatenates rows from another FakeDataGenerator instance, ensuring that 
+        both the original column schemas and the current column orders match.
 
         Args:
             table (FakeDataGenerator): The other instance to concatenate data from.
 
         Raises:
             TypeError: If `table` is not a FakeDataGenerator instance.
-            ValueError: If the table schema (column names and params) does not match.
+            ValueError: If the original schemas or current column orders/names do not match.
         """
         if not isinstance(table, FakeDataGenerator):
             raise TypeError("Expected a FakeDataGenerator instance.")
 
-        def col_signature(col): 
-            return (col['name'], tuple(sorted(col.get('params', {}).items())))
-        
-        self_cols_sorted = sorted([col_signature(col) for col in self.__cols])
-        other_cols_sorted = sorted([col_signature(col) for col in table.cols])
+        if self.__original_schema != table.__original_schema:
+            raise ValueError("Cannot concatenate: original column schemas do not match.")
 
-        if self_cols_sorted != other_cols_sorted:
-            raise ValueError("Cannot concatenate: column schemas do not match.")
-        
-        ordered_col_names = [col['name'] for col in self.__cols]
-        reordered_rows = [
-            {key: row[key] for key in ordered_col_names} for row in table.rows
-        ]
+        if self.columns != table.columns:
+            raise ValueError("Cannot concatenate: current column names or order do not match.")
 
-        self.__rows.extend(reordered_rows)
+        self.__rows.extend(table.rows)
 
     def __eq__(self, other) -> bool:
         """
-        Checks equality with another FakeDataGenerator based on column definitions,
-        regardless of the order.
+        Checks equality with another FakeDataGenerator instance based on the set of
+        initial column names, regardless of their order.
 
         Args:
-            other (FakeDataGenerator): The other instance to compare with.
+            other (FakeDataGenerator): The other instance to compare.
 
         Returns:
-            bool: True if both have the same set of column definitions; False otherwise.
+            bool: True if both have the same initial column names (regardless of order); False otherwise.
         """
         if not isinstance(other, FakeDataGenerator):
             return False
 
-        def sorted_columns(cols):
-            return sorted(cols, key=lambda col: col['name'])
-
-        return sorted_columns(self.__cols) == sorted_columns(other.__cols)
-
+        return set(self.__original_schema) == set(other.__original_schema)
 
     def _generate_date(self, min_date: str, max_date: str) -> date:
         """
