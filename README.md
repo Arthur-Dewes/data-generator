@@ -43,6 +43,7 @@ from ffactory import FakeDataGenerator
 gen = FakeDataGenerator(num_rows=100, locale='pt_BR')
 
 # Add columns
+# Some columns can repeat (use gen.info() to see which columns support repetition)
 gen.add_columns([
     'name',
     'email',

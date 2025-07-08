@@ -23,14 +23,15 @@ class Sampling:
         return self.__rows
 
     @property
-    def cols(self) -> list[dict]:
+    def columns(self) -> list[str]:
         """
         Returns the current column names.
 
         Returns:
-            list[str]: The list of column names.
+            list[str]: A list of column names.
         """
-        return self.__cols
+        return [col['name'] for col in self.__cols]
+
 
     def save(self, file_extension: str, path: str) -> None:
         """

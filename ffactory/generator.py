@@ -42,14 +42,14 @@ class FakeDataGenerator:
         return self.__rows
     
     @property
-    def cols(self) -> list[dict]:
+    def columns(self) -> list[str]:
         """
         Returns the current column names.
 
         Returns:
-            list[str]: The list of column names.
+            list[str]: A list of column names.
         """
-        return self.__cols
+        return [col['name'] for col in self.__cols]
 
     __br_cols = ('id', 'name', 'email', 'age', 'cpf', 'cnpj', 'price', 'phoneNumber',
                 'job', 'date', 'time', 'boolean')
@@ -75,6 +75,14 @@ class FakeDataGenerator:
         """
         Adds a new column to the data schema.
 
+        Accepted column names:
+            For locale 'pt_BR':
+                'id', 'name', 'email', 'age', 'cpf', 'cnpj', 'price', 
+                'phoneNumber', 'job', 'date', 'time', 'boolean'
+            For locale 'en_US':
+                'id', 'name', 'email', 'age', 'ssn', 'ein', 'price', 
+                'phoneNumber', 'job', 'date', 'time', 'boolean'
+
         Args:
             name (str): Name of the column to add.
             **kwargs: Optional parameters depending on the column type:
@@ -87,6 +95,7 @@ class FakeDataGenerator:
             ValueError: If any argument is invalid or inconsistent with the column schema.
             TypeError: If any argument is of an invalid type.
         """
+
         repetitive_cols = FakeDataGenerator.__repetitive_cols
 
         available_cols = (
@@ -154,6 +163,14 @@ class FakeDataGenerator:
     def add_columns(self, columns: list[str | tuple[str, dict]]) -> None:
         """
         Adds multiple columns at once.
+
+        Accepted column names:
+            For locale 'pt_BR':
+                'id', 'name', 'email', 'age', 'cpf', 'cnpj', 'price', 
+                'phoneNumber', 'job', 'date', 'time', 'boolean'
+            For locale 'en_US':
+                'id', 'name', 'email', 'age', 'ssn', 'ein', 'price', 
+                'phoneNumber', 'job', 'date', 'time', 'boolean'
 
         Args:
             columns (list[str | tuple[str, dict]]): A list where each element is either:
@@ -424,3 +441,42 @@ class FakeDataGenerator:
         """
         col_names = [col['name'] for col in self.__cols]
         return TableSampler(columns=col_names, rows=self.__rows)
+
+    def info(self) -> None:
+        """
+        Prints a summary of the table schema, data size, and available functionalities.
+        """
+        print("FakeDataGenerator Summary")
+        print("-" * 40)
+
+        print(f"Locale: {self.__faker.locales[0]}")
+        
+        print(f"Number of rows: {len(self.__rows)}")
+        print(f"Number of columns: {len(self.__cols)}")
+
+        print("\nColumns:")
+        if not self.__cols:
+            print("  (No columns added yet)")
+        else:
+            for col in self.__cols:
+                name = col['name']
+                params = col.get('params', {})
+                if params:
+                    param_str = ", ".join(f"{k}={v}" for k, v in params.items())
+                    print(f"  - {name} ({param_str})")
+                else:
+                    print(f"  - {name}")
+
+        print("\nColumns that can be repeated:")
+        print("  ", ", ".join(self.__repetitive_cols))
+
+        print("\nMain functions:")
+        print("  add_column(name, **kwargs)        → Add a single column")
+        print("  add_columns([...])                → Add multiple columns")
+        print("  remove_column(name)               → Remove a column")
+        print("  generate_data()                   → Generate synthetic data")
+        print("  as_table()                        → Print or return a formatted table")
+        print("  save(ext, path)                   → Save data to file")
+        print("  to_sampler()                      → Convert to sampler object")
+        print("  info()                            → Show this summary")
+
