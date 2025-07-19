@@ -39,28 +39,52 @@ uv sync
 ```python
 from ffactory import FakeDataGenerator
 
-# Create a table with 100 rows
-gen = FakeDataGenerator(num_rows=100, locale='pt_BR')
+gen = FakeDataGenerator(100, 'pt_BR')
 
-# Add columns
-# Some columns can repeat (use gen.info() to see which columns support repetition)
 gen.add_columns([
+    'index',
     'name',
-    'email',
-    ('age', {'min_age': 18, 'max_age': 65}),
     ('date', {'min_date': '2010-01-01', 'max_date': '2022-12-31'}),
-    ('boolean', {'true_chance': 70}),
-    ('price', {'min_price': 50, 'max_price': 200})
+    'boolean',
+    ('boolean', {'true_chance': 25}),
+    'float',
+    ('int', {'min_int': 0, 'max_int': 4})
 ])
-
-# Generate the data
 gen.generate_data()
 
-# Display as formatted table
+gen.as_table(return_string=False)
+gen.info()
+
+gen.save('csv', 'data')
+
+```
+
+---
+
+### Concatenation and Equality Between Generators
+
+* concatenate merges two generators if their column names and order match.
+* __eq__ checks if two generators have the same set of column names, ignoring order.
+
+```python
+# To generate multiple variations of a column (e.g., different parameter settings), create separate generators and concatenate them.
+another_gen = FakeDataGenerator(100, 'pt_BR')
+
+another_gen.add_columns([
+    'index',
+    'name',
+    'date',
+    'boolean',
+    'boolean',
+    'float',
+    ('int', {'min_int': 5, 'max_int': 9})
+])
+another_gen.generate_data()
+
+gen.concatenate(another_gen)
+
 gen.as_table(return_string=False)
 
-# Save to CSV
-gen.save('csv', 'dados_falsos')
 ```
 
 ---
@@ -72,19 +96,25 @@ Transform the generated data into a sampler and apply common sampling techniques
 ```python
 sampler = gen.to_sampler()
 
-# Simple random sampling without replacement
-sample1 = sampler.random_sampling(n_samples=5, repo=False)
+# Rename 'int' to 'classes' for use in group-based sampling
+sampler.columns = {'int': 'classes'}
 
-# Stratified sampling based on 'boolean' column
-sample2 = sampler.stratified_sampling(n_samples=1, column='boolean')
+# Simple random sampling without replacement
+sample1 = sampler.random_sampling(n_samples=10, repo=False)
+
+# Stratified sampling based on 'classes' column
+sample2 = sampler.stratified_sampling(n_samples=10, column='classes')
 
 # Systematic sampling
-sample3 = sampler.systematic_sampling(interval=10, n_samples=5)
+sample3 = sampler.systematic_sampling(interval=10, n_samples=10)
 
-# Cluster sampling using the 'age' column
-sample4 = sampler.cluster_sampling(group_by='age', n_samples=3)
+# Cluster sampling using the 'classes' column
+sample4 = sampler.cluster_sampling(group_by='classes', n_samples=3)
 
-sample1.as_table(return_string=False)
+for sampling in [sample1, sample2, sample3, sample4]:
+    sampling.as_table(return_string=False)
+    print()
+
 ```
 
 ---
@@ -104,4 +134,3 @@ sample1.as_table(return_string=False)
 * CSV (`;` as separator)
 * JSON (pretty-printed, supports `date` objects)
 * HTML (styled HTML table)
-
