@@ -30,7 +30,7 @@ class Sampling:
         Returns:
             list[str]: A list of column names.
         """
-        return [col['name'] for col in self.__cols]
+        return self.__cols
 
 
     def save(self, file_extension: str, path: str) -> None:
@@ -47,7 +47,7 @@ class Sampling:
             ValueError: If the path is empty or has invalid characters.
             FileNotFoundError: If the directory in the path does not exist.
         """
-        TablePresenter.save(self.__rows, self.__cols, file_extension, path)
+        TablePresenter.save(self.__cols, self.__rows, file_extension, path)
 
     def as_table(self, return_string: bool = True) -> str | None:
         """

@@ -102,7 +102,7 @@ class TablePresenter:
             print(table_string)
 
     @staticmethod
-    def save(rows: list[dict], columns: list[dict], file_extension: str, path: str) -> None:
+    def save(columns: list[str], rows: list[dict], file_extension: str, path: str) -> None:
         """
         Saves data rows to a file in the specified format (CSV, JSON, or HTML).
 
