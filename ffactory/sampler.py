@@ -34,8 +34,8 @@ class TableSampler:
         Returns:
             list[str]: A list of column names.
         """
-        return [col['name'] for col in self.__cols]
-
+        return self.__cols
+    
     @columns.setter
     def columns(self, names: list[str] | dict[str, str]) -> None:
         """
@@ -87,6 +87,7 @@ class TableSampler:
     def random_sampling(self, n_samples: int, repo: bool = True) -> Sampling:
         """
         Performs simple random sampling.
+        Selects rows at random from the dataset.
 
         Args:
             n_samples (int): Number of rows to sample.
@@ -119,6 +120,7 @@ class TableSampler:
     def stratified_sampling(self, n_samples: int, column: str) -> Sampling:
         """
         Performs stratified sampling based on a specified column.
+        Samples proportionally from subgroups defined by a column.
 
         Args:
             n_samples (int): Total number of samples to draw.
@@ -171,6 +173,7 @@ class TableSampler:
     def systematic_sampling(self, interval: int, n_samples: int) -> Sampling:
         """
         Performs systematic sampling with a fixed interval.
+        Selects rows at regular intervals through the dataset.
 
         Args:
             interval (int): Interval between selected rows.
@@ -207,6 +210,7 @@ class TableSampler:
     def cluster_sampling(self, group_by: str, n_samples: int) -> Sampling:
         """
         Performs cluster sampling by grouping rows using a specific column.
+        Randomly selects groups (clusters) and includes all their rows.
 
         Args:
             group_by (str): Column to define clusters.
@@ -258,7 +262,7 @@ class TableSampler:
             ValueError: If the path is empty or has invalid characters.
             FileNotFoundError: If the directory in the path does not exist.
         """
-        TablePresenter.save(self.__rows, self.__cols, file_extension, path)
+        TablePresenter.save(self.__cols, self.__rows, file_extension, path)
 
     def as_table(self, return_string: bool = True) -> str | None:
         """
